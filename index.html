@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkbox</title>
+  <style>
+    .checkbox-panel {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+    }
+
+    .checkbox-panel ui-checkbox {
+      margin: 0 10px;
+    }
+
+    ui-checkbox {
+      --size: 100px;
+      --background-color: white;
+      --checkmark-color: rgba(0, 0, 0, .7);
+      --border-radius: 20%;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: var(--size);
+      height: var(--size);
+      border-radius: var(--border-radius);
+
+      cursor: pointer;
+    }
+
+    ui-checkbox input {
+      display: none;
+    }
+
+    [name="wrapper"] {
+      width: 100%;
+      height: 100%;
+      background: var(--background-color);
+      position: relative;
+      border-radius: inherit;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    }
+
+    ui-checkbox input:checked ~ [name="wrapper"] {
+      box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+
+    ui-checkbox input:checked ~ [name="wrapper"]:after {
+      content: "\2713";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: all .5s;
+      font-size: calc(var(--size) - 20px);
+      color: var(--checkmark-color);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="checkbox-panel">
+    <ui-checkbox data-checked="true"></ui-checkbox>
+    <ui-checkbox></ui-checkbox>
+    <ui-checkbox></ui-checkbox>
+    <ui-checkbox data-checked="true"></ui-checkbox>
+  </div>
+
+  <script>
+    class UiCheckbox extends HTMLElement {
+
+        constructor() {
+            super();
+
+            this.toggle = this.toggle.bind(this);
+            this.init();
+        }
+
+        connectedCallback() {
+            this.addEventListener('click', this.toggle);
+        }
+
+        init() {
+            this.input = document.createElement('input');
+            this.input.type = 'checkbox';
+            this.input.checked = this.dataset.checked ? true : false;
+
+            this.wrapper = document.createElement('div');
+            this.wrapper.setAttribute('name', 'wrapper');
+
+            this.append(this.input, this.wrapper);
+        }
+
+        check() {
+            this.dataset.checked = 'true';
+            this.input.checked = true;
+        }
+
+        uncheck() {
+            delete this.dataset.checked;
+            this.input.checked = false;
+        }
+
+        toggle() {
+            if (this.dataset.checked) {
+                this.uncheck();
+            } else {
+                this.check();
+            }
+        }
+
+    }
+
+    window.customElements.define('ui-checkbox', UiCheckbox);
+  </script>
+</body>
+</html>
